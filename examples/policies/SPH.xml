@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Policies>
+  
+  <!-- boundary particles: part of SPH but they never move -->
+  <Policy id="1000">
+    <Step id="0" DeltaTime="fine" StopAtGoal="false" OptimizationMethod="gradient">
+      <CostFunction name="SPH" coeff="0" restDensityMax="5" gasConstant="200" isObstacle="true" />
+    </Step>
+  </Policy>
+
+  <!-- agents using SPH + weak goal reaching -->
+	<Policy id="0">
+		<Step id="0" DeltaTime="fine" StopAtGoal="true" OptimizationMethod="gradient" RelaxationTime="0.5">
+			<CostFunction name="GoalReachingForce" />
+		</Step>
+		<Step id="1" DeltaTime="fine" StopAtGoal="false" OptimizationMethod="gradient">
+			<CostFunction name="SPH" restDensityMax="5" gasConstant="200" />
+			<CostFunction name="ContactForces_Helbing" scale_agents="50" scale_obstacles="200" />
+		</Step>
+	</Policy>
+  
+</Policies>

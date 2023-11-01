@@ -1,0 +1,4 @@
+/opt/local/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Users/yorkwu/Applications/CLion.app/Contents/bin/ninja/mac/ninja -DCMAKE_C_COMPILER=/opt/homebrew/Cellar/gcc/13.2.0/bin/gcc-13 -DCMAKE_CXX_COMPILER=/opt/homebrew/Cellar/gcc/13.2.0/bin/g++-13 -G Ninja -S /Users/yorkwu/Documents/科研/stampede/codes/UMANS -B /Users/yorkwu/Documents/科研/stampede/codes/UMANS/cmake-build-debug-gcc
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /Users/yorkwu/Documents/科研/stampede/codes/UMANS/cmake-build-debug-gcc

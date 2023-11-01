@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Agents>
+	
+	<!-- crowd near the bottleneck -->
+	<SpawnRectangle 
+		xmin="-8.5" xmax="-0.5" ymin="-5.5" ymax="5.5" 
+		NrAgentsHorizontal="14" NrAgentsVertical="16"
+		StartTime="0" EndTime="0.1" Interval="1"
+		RemoveAtGoal="true" 
+		PositionNoise="0.1"
+		AgentRadius="0.24" AgentRadiusNoise="0.025">
+		<Policy id="0"/>
+		<goal x="2" y="0"/>
+	</SpawnRectangle>
+	
+	<!-- agents spawning over time on the left -->
+	<SpawnRectangle 
+		xmin="-25" xmax="-24" ymin="-4" ymax="4" 
+		NrAgentsHorizontal="1" NrAgentsVertical="8"
+		StartTime="5" EndTime="200" Interval="2"
+		RemoveAtGoal="true" 
+		PositionNoise="0.1"
+		AgentRadius="0.24" AgentRadiusNoise="0.025">
+		<Policy id="0"/>
+		<goal x="2" y="0"/>
+	</SpawnRectangle>
+	
+	<!-- agents spawning over time at the top -->
+	<SpawnRectangle 
+		xmin="-15" xmax="-11" ymin="9" ymax="10" 
+		NrAgentsHorizontal="4" NrAgentsVertical="1"
+		StartTime="0" EndTime="200" Interval="1"
+		RemoveAtGoal="true" 
+		PositionNoise="0.1"
+		AgentRadius="0.24" AgentRadiusNoise="0.025">
+		<Policy id="0"/>
+		<goal x="-13" y="-10000"/>
+	</SpawnRectangle>
+	
+</Agents>

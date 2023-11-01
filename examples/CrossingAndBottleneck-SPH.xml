@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Simulation delta_time="0.1" delta_time_fine="0.02" end_time="10000" integration="Euler" start_time_output="10000" end_time_output="10001" delta_time_output="0.12">
+	<World type="Planar" xmin="-26" xmax="1" ymin="-10" ymax="10">
+		<Obstacles file="obstacles/CrossingAndBottleneck.xml" />
+	</World>
+	<Policies file="policies/SPH.xml"/>
+	<Agents file="agents/CrossingAndBottleneck.xml"/>
+</Simulation>

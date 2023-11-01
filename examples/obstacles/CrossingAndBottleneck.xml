@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Obstacles>
+	
+	<!--right side with bottleneck -->
+	
+	<Obstacle> <!-- top -->
+		<Point x="-10" y="6"/>
+		<Point x="0" y="6"/>
+		<Point x="2" y="7"/>
+		<Point x="2" y="10"/>
+		<Point x="-10" y="10"/>
+	</Obstacle>
+	<Obstacle> <!-- bottom -->
+		<Point x="-10" y="-10"/>
+		<Point x="2" y="-10"/>
+		<Point x="2" y="-7"/>
+		<Point x="0" y="-6"/>
+		<Point x="-10" y="-6"/>
+	</Obstacle>
+	<Obstacle> <!-- right 1 -->
+		<Point x="0" y="-6"/>
+		<Point x="2" y="-7"/>
+		<Point x="2" y="-0.4"/>
+		<Point x="0" y="-0.4"/>
+	</Obstacle>
+	<Obstacle> <!-- right 2 -->
+		<Point x="0" y="0.4"/>
+		<Point x="2" y="0.4"/>
+		<Point x="2" y="7"/>
+		<Point x="0" y="6"/>
+	</Obstacle>
+	
+	<!-- blocks on the left -->
+	<Obstacle>
+		<Point x="-16" y="6"/>
+		<Point x="-16" y="10"/>
+		<Point x="-26" y="10"/>
+		<Point x="-26" y="6"/>
+	</Obstacle>
+	<Obstacle>
+		<Point x="-26" y="-6"/>
+		<Point x="-26" y="-10"/>
+		<Point x="-16" y="-10"/>
+		<Point x="-16" y="-6"/>
+	</Obstacle>
+	
+</Obstacles>
