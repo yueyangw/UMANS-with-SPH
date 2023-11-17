@@ -110,3 +110,4 @@ Contact: crowd_group@inria.fr
 Website: https://project.inria.fr/crowdscience/
 
 See the file AUTHORS.md for a list of all contributors.
+# UMANS
