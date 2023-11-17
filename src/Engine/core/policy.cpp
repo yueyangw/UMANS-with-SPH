@@ -33,9 +33,13 @@
 Policy::~Policy()
 {
 	// delete all cost functions
-	for (auto& costFunction : cost_functions_)
-		delete costFunction.first;
-	cost_functions_.clear();
+    for (auto& costFunction : cost_functions_) delete costFunction.first;
+    if (haveSteps) {
+        for (PolicyStep* step : policy_steps_) delete step;
+        policy_steps_.clear();
+        policy_steps_map_.clear();
+    }
+    cost_functions_.clear();
 }
 
 float Policy::getInteractionRange() const
@@ -164,6 +168,16 @@ void Policy::AddCostFunction(CostFunction* costFunction, const CostFunctionParam
 	params.ReadFloat("coeff", coefficient);
 	costFunction->parseParameters(params);
 	cost_functions_.push_back({ costFunction, coefficient });
+}
+
+bool Policy::AddPolicyStep(int id, PolicyStep* step) {
+    if (policy_steps_map_[id] != nullptr) {
+        return false;
+    }
+
+    policy_steps_map_[id] = step;
+    policy_steps_.push_back(step);
+    return true;
 }
 
 bool Policy::OptimizationMethodFromString(const std::string &method, Policy::OptimizationMethod& result)

@@ -102,15 +102,16 @@ void WorldBase::DoStep()
 
 	int n = (int)agents_.size();
 
-	// 2. compute nearest neighbors for each agent
-#pragma omp parallel for
-	for (int i = 0; i < n; ++i)
-		agents_[i]->ComputeNeighbors(this);
+// These missions processed in ComputeAcceleration
+    // 2. compute nearest neighbors for each agent
+// #pragma omp parallel for
+//     for (int i = 0; i < n; ++i)
+// 		agents_[i]->ComputeNeighbors(this);
 
-	// 3. compute a preferred velocity for each agent
-#pragma omp parallel for
-	for (int i = 0; i < n; ++i)
-		agents_[i]->ComputePreferredVelocity();
+// 	// 3. compute a preferred velocity for each agent
+// #pragma omp parallel for
+// 	for (int i = 0; i < n; ++i)
+// 		agents_[i]->ComputePreferredVelocity();
 
     // TODO:吴越洋1030添加，计算SPH密度
 #pragma omp parallel for

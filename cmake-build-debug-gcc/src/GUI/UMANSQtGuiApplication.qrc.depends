@@ -1,7 +1,0 @@
-<RCC>
-  <qresource prefix="GUI">
-    <file>Resources/ApplicationIcon.png</file>
-    <file>Resources/ApplicationLogo.png</file>
-    <file>Resources/InriaLogo.png</file>
-  </qresource>
-</RCC>

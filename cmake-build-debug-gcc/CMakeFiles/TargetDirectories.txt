@@ -1,8 +1,0 @@
-/Users/yorkwu/Documents/科研/stampede/codes/UMANS/cmake-build-debug-gcc/CMakeFiles/Engine.dir
-/Users/yorkwu/Documents/科研/stampede/codes/UMANS/cmake-build-debug-gcc/CMakeFiles/UMANS-ConsoleApplication-Linux.dir
-/Users/yorkwu/Documents/科研/stampede/codes/UMANS/cmake-build-debug-gcc/CMakeFiles/UMANS-Library.dir
-/Users/yorkwu/Documents/科研/stampede/codes/UMANS/cmake-build-debug-gcc/CMakeFiles/UMANS-GUI.dir
-/Users/yorkwu/Documents/科研/stampede/codes/UMANS/cmake-build-debug-gcc/CMakeFiles/edit_cache.dir
-/Users/yorkwu/Documents/科研/stampede/codes/UMANS/cmake-build-debug-gcc/CMakeFiles/rebuild_cache.dir
-/Users/yorkwu/Documents/科研/stampede/codes/UMANS/cmake-build-debug-gcc/CMakeFiles/UMANS-GUI_autogen_timestamp_deps.dir
-/Users/yorkwu/Documents/科研/stampede/codes/UMANS/cmake-build-debug-gcc/CMakeFiles/UMANS-GUI_autogen.dir

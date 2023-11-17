@@ -34,6 +34,7 @@
 #include <map>
 #include <string>
 #include <iostream>
+#include <CostFunctions/SPH.h>
 
 /// <summary>A static class that can create new instances of cost functions upon request.</summary>
 class CostFunctionFactory
@@ -58,7 +59,7 @@ private:
 		}
         // TODO: 吴越洋1024修改
         if (name == "SPH") {
-
+            registry[name] = [] {return new SPH();};
         } else {
             registry[name] = [] { return new CostFunctionType(); };
         }

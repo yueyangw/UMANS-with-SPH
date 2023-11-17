@@ -32,3 +32,24 @@ NeighborList WorldPlanar::ComputeNeighbors(const Vector2D &position, float searc
     return { phantoms, obstacles };
 }
 
+void WorldPlanar::DoStep_MoveAllAgents() {
+
+#pragma omp parallel for
+  for (int i = 0; i < (int)agents_.size(); i++) {
+    Agent *agent = agents_[i];
+
+    // update the agent's velocity and position as usual
+    agent->UpdateVelocityAndPosition(this);
+
+    // if the agent has crossed the bounding rectangle, warp it to the other
+    // side
+    float x = agent->getPosition().x;
+    float y = agent->getPosition().y;
+    if (x > xmax_) x = xmax_;
+    else if (x < xmin_) x = xmin_;
+    if (y > ymax_) y = ymax_;
+    else if (y < ymin_) y = ymin_;
+
+    agent->setPosition(Vector2D(x, y));
+  }
+}

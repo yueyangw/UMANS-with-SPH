@@ -63,9 +63,7 @@ endif()
 
 # === Engine project: a static library that performs the simulation
 
-add_library(Engine STATIC ${src_Engine}
-        src/Engine/core/worldPlanar.cpp
-        src/Engine/core/worldPlanar.h)
+add_library(Engine STATIC ${src_Engine})
 
 # === Console application
 

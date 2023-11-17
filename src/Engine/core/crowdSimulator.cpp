@@ -28,6 +28,7 @@
 
 #include <core/crowdSimulator.h>
 
+#include <string>
 #include <tools/HelperFunctions.h>
 #include <tools/TrajectoryCSVWriter.h>
 #include <core/worldInfinite.h>
@@ -217,7 +218,8 @@ bool CrowdSimulator::FromConfigFile_loadWorld(const tinyxml2::XMLElement* worldE
 	}
 
     // TODO:吴越洋1025加
-    else if (worldType == WorldBase::Type::PLANAR_WORLD) {
+    else if (worldType == WorldBase::Type::PLANAR_WORLD)
+	{
         float xmin = -1, xmax = -1, ymin = -1, ymax = -1;
         worldElement->QueryFloatAttribute("xmin", &xmin);
         worldElement->QueryFloatAttribute("xmax", &xmax);
@@ -355,12 +357,97 @@ bool CrowdSimulator::FromConfigFile_loadObstaclesBlock(const tinyxml2::XMLElemen
 	return true;
 }
 
-bool
+bool CrowdSimulator::FromConfigFile_loadPolicySteps(const tinyxml2::XMLElement* policyElement) {
+    int policyID;
+    policyElement->QueryIntAttribute("id", &policyID);
+
+    Policy* pl = new Policy(true);
+
+    auto* stepElement = policyElement->FirstChildElement("Step");
+    while (stepElement != nullptr) {
+        int stepID;
+        stepElement->QueryIntAttribute("id", &stepID);
+
+        auto methodName = stepElement->Attribute("OptimizationMethod");
+        Policy::OptimizationMethod method;
+        if (!Policy::OptimizationMethodFromString(methodName == nullptr ? "" : methodName, method))
+        {
+            std::cerr << "Error in Step " << stepID << ": Optimization method invalid." << std::endl;
+            return false;
+        }
+
+        PolicyStep* step = new PolicyStep(method);
+
+        float relaxationTime = 0;
+        if (stepElement->QueryFloatAttribute("RelaxationTime", &relaxationTime) ==
+            tinyxml2::XMLError::XML_SUCCESS)
+            step->setRelaxationTime(relaxationTime);
+
+        bool stopAtGoal;
+        if (stepElement->QueryBoolAttribute("StopAtGoal", &stopAtGoal) ==
+            tinyxml2::XMLError::XML_SUCCESS)
+            step->setStopAtGoal(stopAtGoal);
+
+        auto deltaTimeMode = stepElement->Attribute("DeltaTime");
+        if (deltaTimeMode != nullptr) {
+            step->setDeltaTime(deltaTimeMode);
+        }
+
+        auto* funcElement = stepElement->FirstChildElement("CostFunction");
+        while (funcElement != nullptr) {
+            const auto& costFunctionName = funcElement->Attribute("name");
+            CostFunction* costFunction = CostFunctionFactory::CreateCostFunction(costFunctionName);
+            if (costFunction != nullptr)
+                step->AddCostFunction(costFunction, CostFunctionParameters(funcElement));
+
+            funcElement = funcElement->NextSiblingElement();
+        }
+
+        if (step->GetNumberOfCostFunctions() == 0) {
+            std::cerr << "Error: stepID " << stepID << "needs at least one cost function element"
+                      << std::endl;
+            delete step;
+            delete pl;
+            return false;
+        }
+
+        if (!pl->AddPolicyStep(stepID, step)) {
+            std::cerr << "Error: Failed to add Step " << stepID
+                      << " because its ID is already taken" << std::endl;
+            delete step;
+            delete pl;
+            return false;
+        }
+        stepElement = stepElement->NextSiblingElement();
+    }
+
+    if (pl->GetNumberOfPolicySteps() == 0) {
+        std::cerr << "Error: Policy " << policyID << "needs at least one step element"
+                  << std::endl;
+        delete pl;
+        return false;
+    }
+
+    // --- Save the policy in the simulator
+
+    if (!AddPolicy(policyID, pl)) {
+        std::cerr << "Error: Failed to add Policy " << policyID
+                  << " because its ID is already taken" << std::endl;
+        delete pl;
+        return false;
+    }
+
+    return true;
+}
 
 bool CrowdSimulator::FromConfigFile_loadSinglePolicy(const tinyxml2::XMLElement* policyElement)
 {
 	// --- Read mandatory parameters
 
+	// 如果Policy Element中存在Step SubElement，进入loadSteps
+	if (policyElement->FirstChildElement("Step") != nullptr) {
+		return FromConfigFile_loadPolicySteps(policyElement);
+	}
 	// Unique policy ID
 	int policyID;
 	policyElement->QueryIntAttribute("id", &policyID);

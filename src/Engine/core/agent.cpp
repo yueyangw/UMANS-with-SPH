@@ -26,6 +26,8 @@
 ** See the file AUTHORS.md for a list of all contributors.
 */
 
+#include "core/policy.h"
+#include "tools/vector2D.h"
 #include <core/agent.h>
 #include <core/worldBase.h>
 
@@ -51,12 +53,13 @@ Agent::Agent(size_t id, const Agent::Settings& settings) :
 
 #pragma region [Simulation-loop methods]
 
-void Agent::ComputeNeighbors(WorldBase* world)
+void Agent::ComputeNeighbors(WorldBase* world, Policy* policy)
 {
+	
 	// get the query radius
-	float range = getPolicy()->getInteractionRange();
+    float range = policy->getInteractionRange();
 
-	// perform the query and store the result
+    // perform the query and store the result
 	neighbors_ = world->ComputeNeighbors(position_, range, this);
 }
 
@@ -69,14 +72,34 @@ void Agent::ComputePreferredVelocity()
 		preferred_velocity_ = (goal_ - position_).getnormalized() * getPreferredSpeed();
 }
 
-void Agent::ComputeAcceleration(WorldBase* world)
-{
-	next_acceleration_ = getPolicy()->ComputeAcceleration(this, world);
+void Agent::ComputeAcceleration(WorldBase* world) {
+    if (getPolicy()->getHaveSteps()) {
+        next_acceleration_ = Vector2D(0, 0);
+        for (auto* step : getPolicy()->getSteps()) {
+            ComputeNeighbors(world, step);
+            ComputePreferredVelocity();
+            next_acceleration_ += step->ComputeAcceleration(this, world);
+		}
+    } else {
+        ComputeNeighbors(world, getPolicy());
+        ComputePreferredVelocity();
+        next_acceleration_ = getPolicy()->ComputeAcceleration(this, world);
+    }
 }
 
-void Agent::ComputeContactForces(WorldBase* world)
-{
-	next_contact_forces_ = getPolicy()->ComputeContactForces(this, world);
+void Agent::ComputeContactForces(WorldBase* world) {
+    if (getPolicy()->getHaveSteps()) {
+        next_contact_forces_ = Vector2D(0, 0);
+        for (auto* step : getPolicy()->getSteps()) {
+            ComputeNeighbors(world, step);
+            ComputePreferredVelocity();
+            next_contact_forces_ += step->ComputeContactForces(this, world);
+		}
+    } else {
+        ComputeNeighbors(world, getPolicy());
+        ComputePreferredVelocity();
+        next_contact_forces_ = getPolicy()->ComputeContactForces(this, world);
+    }
 }
 
 void Agent::updateViewingDirection()

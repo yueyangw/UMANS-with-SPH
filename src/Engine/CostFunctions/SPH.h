@@ -41,7 +41,8 @@ private:
 	float baseDensityContribution;
 
 public:
-	SPH(const PolicyStep* step) : ObjectInteractionForces(step, false) { range_ = 1; }
+//	SPH(const PolicyStep* step) : ObjectInteractionForces(step, false) { range_ = 1; }
+    SPH() : ObjectInteractionForces() { range_ = 1; }
 	virtual ~SPH() {}
 	const static std::string GetName() { return "SPH"; }
 	const bool AssumesObstacleParticles() const { return isObstacle; }
@@ -65,7 +66,7 @@ public:
 
 protected:
 	virtual Vector2D ComputeAgentInteractionForce(const Agent* agent, const PhantomAgent& other) const override;
-	virtual Vector2D ComputeObstacleInteractionForce(const Agent* agent, const LineSegment2D& obstacle, const Vector2D& nearest) const override;
+	virtual Vector2D ComputeObstacleInteractionForce(const Agent* agent, const LineSegment2D& obstacle) const override;
 
 private:
 	float getObstacleVolumeInsideCircle(const LineSegment2D& segment, const Vector2D& circleCenter, const float circleRadius) const;

@@ -35,6 +35,7 @@
 class WorldBase;
 class Agent;
 class CostFunction;
+// class PolicyStep;
 struct SamplingParameters;
 struct PhantomAgent;
 
@@ -44,86 +45,93 @@ typedef std::pair<AgentNeighborList, ObstacleNeighborList> NeighborList;
 
 typedef std::vector<std::pair<const CostFunction*, float>> CostFunctionList;
 
-/// @defgroup costfunctions Cost functions
-/// Implementations of specific cost functions for local navigation.
+    /// @defgroup costfunctions Cost functions
+    /// Implementations of specific cost functions for local navigation.
 
-/// <summary>An abstract class for a cost function that agents use for their (local) navigation.</summary>
-/// <remarks>To create a new cost function, you need to create a new class that inherits from CostFunction.
-/// Your class should implement the following: 
-/// <list type="bullet">
-/// <item>const static std::string GetName(): This method should return the name that identifies the function in configuration files.</item>
-/// <item>GetCost(): This method should compute and return the cost of a velocity according to your cost function.</item>
-/// <item>(optionally) GetGradient(): This method should compute and return the gradient of your cost function at the given velocity.
-/// If you do not implement it, the program will automatically approximate the gradient via sampling.</item>
-/// <item>(optionally) parseParameters(): This method should parse any additional parameters that are specific to your cost function. 
-/// Make sure to call the parent version of parseParameters() here, to parse any parameters that were already defined.</item>
-/// </list>
-/// Finally, to be able to use your cost function, add the following line to the file core/costFunctionFactory.cpp:
-/// <code>registerCostFunction<MyNewFunction>();</code>
-///
-/// This will make sure that the program can dynamically create instances of your cost function when it is used in an XML file.
-/// 
-/// The GenericCost class is a template file that you can use for your own classes, if you wish.</remarks>
+    /// <summary>An abstract class for a cost function that agents use for their (local)
+    /// navigation.</summary> <remarks>To create a new cost function, you need to create a new class
+    /// that inherits from CostFunction. Your class should implement the following: <list
+    /// type="bullet"> <item>const static std::string GetName(): This method should return the name
+    /// that identifies the function in configuration files.</item> <item>GetCost(): This method
+    /// should compute and return the cost of a velocity according to your cost function.</item>
+    /// <item>(optionally) GetGradient(): This method should compute and return the gradient of your
+    /// cost function at the given velocity. If you do not implement it, the program will
+    /// automatically approximate the gradient via sampling.</item> <item>(optionally)
+    /// parseParameters(): This method should parse any additional parameters that are specific to
+    /// your cost function. Make sure to call the parent version of parseParameters() here, to parse
+    /// any parameters that were already defined.</item>
+    /// </list>
+    /// Finally, to be able to use your cost function, add the following line to the file
+    /// core/costFunctionFactory.cpp: <code>registerCostFunction<MyNewFunction>();</code>
+    ///
+    /// This will make sure that the program can dynamically create instances of your cost function
+    /// when it is used in an XML file.
+    ///
+    /// The GenericCost class is a template file that you can use for your own classes, if you
+    /// wish.</remarks>
 
-/**
-### Example of implementing a subclass
+    /**
+    ### Example of implementing a subclass
 
-Add a file CostFunctions/MyNewFunction.h:
-  
-  <code>
-  #ifndef MY_NEW_FUNCTION_H
-  #define MY_NEW_FUNCTION_H
+    Add a file CostFunctions/MyNewFunction.h:
 
-  class MyNewFunction : public CostFunction {
-  public:
-    MyNewFunction() : CostFunction() {}
-	virtual ~MyNewFunction() {}
-	const static std::string GetName() { return "MyNewFunctionName"; }
+      <code>
+      #ifndef MY_NEW_FUNCTION_H
+      #define MY_NEW_FUNCTION_H
 
-	float GetCost(const Vector2D& velocity, const Agent* agent, const WorldBase * world) const override;
+      class MyNewFunction : public CostFunction {
+      public:
+        MyNewFunction() : CostFunction() {}
+        virtual ~MyNewFunction() {}
+        const static std::string GetName() { return "MyNewFunctionName"; }
 
-	//// optional
-	Vector2D GetGradient(const Vector2D& velocity, const Agent* agent, const WorldBase * world) const override;
+        float GetCost(const Vector2D& velocity, const Agent* agent, const WorldBase * world) const
+    override;
 
-	//// optional
-	void parseParameters(const CostFunctionParameters & params) override;
-  };
+        //// optional
+        Vector2D GetGradient(const Vector2D& velocity, const Agent* agent, const WorldBase * world)
+    const override;
 
-  #endif //MY_NEW_FUNCTION_H
-  </code>
-  
-Add a file CostFunctions/MyNewFunction.cpp:
+        //// optional
+        void parseParameters(const CostFunctionParameters & params) override;
+      };
 
-  <code>
-  #include <CostFunctions/MyNewFunction.h>
+      #endif //MY_NEW_FUNCTION_H
+      </code>
 
-  float MyNewFunction::GetCost(const Vector2D& velocity, const Agent* agent, const WorldBase * world) const {
-    //// Implementation
-  }
+    Add a file CostFunctions/MyNewFunction.cpp:
 
-  //// optional
-  Vector2D MyNewFunction::GetGradient(const Vector2D& velocity, const Agent* agent, const WorldBase * world) const {
-    //// Implementation
-  }
+      <code>
+      #include <CostFunctions/MyNewFunction.h>
 
-  //// optional
-  void MyNewFunction::parseParameters(const CostFunctionParameters & params) {
-	CostFunction::parseParameters(params);
-    //// Implementation
-  }
-  </code>
+      float MyNewFunction::GetCost(const Vector2D& velocity, const Agent* agent, const WorldBase *
+    world) const {
+        //// Implementation
+      }
 
-Add the following lines to core/costFunctionFactory.cpp:
+      //// optional
+      Vector2D MyNewFunction::GetGradient(const Vector2D& velocity, const Agent* agent, const
+    WorldBase * world) const {
+        //// Implementation
+      }
 
-  <code>
-  #include <CostFunctions/MyNewFunction.h>
-  //// ...
-  registerCostFunction<MyNewFunction>();
-  </code>
+      //// optional
+      void MyNewFunction::parseParameters(const CostFunctionParameters & params) {
+        CostFunction::parseParameters(params);
+        //// Implementation
+      }
+      </code>
 
-*/
-class CostFunction
-{
+    Add the following lines to core/costFunctionFactory.cpp:
+
+      <code>
+      #include <CostFunctions/MyNewFunction.h>
+      //// ...
+      registerCostFunction<MyNewFunction>();
+      </code>
+
+    */
+    class CostFunction {
 protected:
 	/// <summary>The interaction range (in meters) for this cost function. </summary>
 	/// <remarks>This is used as the search radius for nearest-neighbor queries.

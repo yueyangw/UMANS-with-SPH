@@ -29,6 +29,9 @@
 #ifndef LIB_POLICY_H
 #define LIB_POLICY_H
 
+#include <cstddef>
+#include <string>
+#include <map>
 #include <tools/vector2D.h>
 #include <core/costFunction.h>
 #include <3rd-party/tinyxml/tinyxml2.h>
@@ -36,6 +39,9 @@
 
 class WorldBase;
 class Agent;
+class PolicyStep;
+
+typedef std::vector<PolicyStep*> PolicyStepList;
 
 /// <summary>A set of sampling parameters that can be used by a Policy.</summary>
 struct SamplingParameters
@@ -92,12 +98,14 @@ struct SamplingParameters
 };
 
 /// <summary>A navigation policy that agents can use for local navigation.</summary>
-/// <remarks>In each frame of the simulation loop, an agent uses a policy to compute an acceleration vector to apply in the upcoming step.
-/// To do this, a policy contains the following main ingredients:<list>
-/// <item>One or more *cost functions* that assign costs to (hypothetical) velocities.</item>
-/// <item>An *optimization method* that describes how to use these cost functions to compute an acceleration.</item>
-/// <item>(Optionally) Additional parameters that describe how to apply this acceleration to the agent.</item></list>
-/// The UMANS library can reproduce many local navigation algorithms by making particular choices for each ingredient.</remarks>
+/// <remarks>In each frame of the simulation loop, an agent uses a policy to compute an acceleration
+/// vector to apply in the upcoming step. To do this, a policy contains the following main
+/// ingredients:<list> <item>One or more *cost functions* that assign costs to (hypothetical)
+/// velocities.</item> <item>An *optimization method* that describes how to use these cost functions
+/// to compute an acceleration.</item> <item>(Optionally) Additional parameters that describe how to
+/// apply this acceleration to the agent.</item></list> The UMANS library can reproduce many local
+/// navigation algorithms by making particular choices for each ingredient.</remarks>
+// class PolicyStep;
 class Policy
 {
 public:
@@ -117,6 +125,9 @@ public:
 	static bool OptimizationMethodFromString(const std::string &method, OptimizationMethod& result);
 
 private:
+    bool haveSteps;
+    PolicyStepList policy_steps_;
+    std::map<int, PolicyStep*> policy_steps_map_;
 	/// <summary>A weighted list of cost functions used by this Policy.</summary>
 	CostFunctionList cost_functions_;
 	/// <summary>The optimization method used by this Policy.</summary>
@@ -135,8 +146,10 @@ public:
 	/// <param name="method">The optimization method that this policy should use.</param>
 	/// <param name="params">The sampling parameters that this policy should use. 
 	/// Only used if the optimization method is OptimizationMethod::SAMPLING.</param>
-	Policy(OptimizationMethod method, SamplingParameters params)
-		: optimizationMethod_(method), samplingParameters_(params) {}
+    Policy(OptimizationMethod method, SamplingParameters params)
+        : optimizationMethod_(method), samplingParameters_(params) {}
+
+    Policy(bool haveSteps) : haveSteps(haveSteps) {}
 
 	/// <summary>Destroys this Policy and all cost functions inside it.</summary>
 	~Policy();
@@ -165,10 +178,18 @@ public:
 	/// <summary>Adds a cost function to this Policy's list of cost functions.</summary>
 	/// <param name="costFunction">A pointer to an alraedy created cost function.</param>
 	/// <param name="params">An XML object containing all parameters that the cost function may want to read.</param>
-	void AddCostFunction(CostFunction* costFunction, const CostFunctionParameters& params);
+    void AddCostFunction(CostFunction* costFunction, const CostFunctionParameters& params);
+
+    bool AddPolicyStep(int id, PolicyStep* step);
 
 	/// <summary>Returns the number of cost functions used by this Policy.</summary>
-	size_t GetNumberOfCostFunctions() const { return cost_functions_.size(); }
+    size_t GetNumberOfCostFunctions() const {
+        return cost_functions_.size();
+    }
+
+    size_t GetNumberOfPolicySteps() const {
+        return policy_steps_map_.size();
+    }
 
 	/// <summary>Finds and returns the range of interaction of this policy.</summary>
 	/// <remarks>This is the largest "range" value among all cost functions in this policy.
@@ -183,7 +204,17 @@ public:
 	/// <summary>Returns the relaxation time of this Policy.</summary>
 	inline float getRelaxationTime() const { return relaxationTime_; }
 	/// <summary>Sets the scaling factor to apply to contact forces. Use 0 to ignore contact forces completely.</summary>
-	inline void setContactForceScale(float s) { contactForceScale_ = s; }
+    inline void setContactForceScale(float s) {
+        contactForceScale_ = s;
+    }
+
+    inline bool getHaveSteps() const {
+        return haveSteps;
+    }
+
+    inline const PolicyStepList& getSteps() const {
+        return policy_steps_;
+	}
 
 private:
 	/// <summary>Computes an acceleration vector for an agent by following the gradient of this Policy's cost functions.</summary>
@@ -196,5 +227,29 @@ private:
 	Vector2D getBestVelocitySampling(Agent* agent, WorldBase* world, const SamplingParameters& params);
 };
 
+class PolicyStep : public Policy {
+private:
+    bool stop_at_goal_;
+    int delta_time_mode_;  // fine,
+
+public:
+    PolicyStep(OptimizationMethod method) : Policy(method, SamplingParameters()) {}
+
+    inline void setStopAtGoal(bool s) {
+        stop_at_goal_ = s;
+    }
+    inline void setDeltaTime(std::string mode) {
+        if (mode == "fine") {
+            delta_time_mode_ = 0;
+        }
+    }
+
+    inline bool getStopAtGoal() {
+        return stop_at_goal_;
+    }
+    inline int getDeltaTime() {
+        return delta_time_mode_;
+    }
+};
 
 #endif //LIB_POLICY_H

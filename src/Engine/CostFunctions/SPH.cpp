@@ -114,7 +114,7 @@ Vector2D SPH::ComputeAgentInteractionForce(const Agent* agent, const PhantomAgen
 	return result / data_i.density;
 }
 
-Vector2D SPH::ComputeObstacleInteractionForce(const Agent* agent, const LineSegment2D& obstacle, const Vector2D& nearest) const
+Vector2D SPH::ComputeObstacleInteractionForce(const Agent* agent, const LineSegment2D& obstacle) const
 {
 	Vector2D result(0, 0);
 
@@ -125,6 +125,8 @@ Vector2D SPH::ComputeObstacleInteractionForce(const Agent* agent, const LineSegm
 	const Vector2D& agentPos = agent->getPosition();
 	const DensityData& data_i = agent->getSPHDensityData();
 	float mass_i = agent->getMass();
+
+    const Vector2D& nearest = nearestPointOnLine(agentPos, obstacle.first, obstacle.second, true);
 
 	// compute the area V that this obstacle segment occupies inside the kernel circle
 	// TODO: maybe store it, so we don't have to compute it twice?

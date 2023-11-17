@@ -33,7 +33,9 @@ public:
         return ymax_;
     }
 
-    NeighborList ComputeNeighbors(const Vector2D &position, float search_radius, const Agent *queryingAgent) const override;
+    NeighborList ComputeNeighbors(const Vector2D &position, float search_radius,
+                                  const Agent *queryingAgent) const override;
+    virtual void DoStep_MoveAllAgents() override;
 };
 
 #endif //UMANS_WORLDPLANAR_H

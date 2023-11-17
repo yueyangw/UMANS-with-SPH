@@ -29,6 +29,7 @@
 #ifndef LIB_CROWD_SIMULATOR_H
 #define LIB_CROWD_SIMULATOR_H
 
+#include <core/policy.h>
 #include <core/worldBase.h>
 #include <core/agent.h>
 #include <map>
@@ -113,6 +114,7 @@ private:
 	bool FromConfigFile_loadPoliciesBlock_ExternallyOrNot(const tinyxml2::XMLElement* policiesBlock, const std::string& fileFolder);
 	bool FromConfigFile_loadPoliciesBlock(const tinyxml2::XMLElement* policiesBlock);
 	bool FromConfigFile_loadSinglePolicy(const tinyxml2::XMLElement* policyElement);
+  bool FromConfigFile_loadPolicySteps(const tinyxml2::XMLElement* policyElement);
 
 	bool FromConfigFile_loadAgentsBlock_ExternallyOrNot(const tinyxml2::XMLElement* agentsBlock, const std::string& fileFolder);
 	bool FromConfigFile_loadAgentsBlock(const tinyxml2::XMLElement* agentsBlock);

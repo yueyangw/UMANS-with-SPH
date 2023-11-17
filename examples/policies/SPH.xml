@@ -15,7 +15,7 @@
 		</Step>
 		<Step id="1" DeltaTime="fine" StopAtGoal="false" OptimizationMethod="gradient">
 			<CostFunction name="SPH" restDensityMax="5" gasConstant="200" />
-			<CostFunction name="ContactForces_Helbing" scale_agents="50" scale_obstacles="200" />
+			<!-- <CostFunction name="ContactForces_Helbing" scale_agents="50" scale_obstacles="200" /> -->
 		</Step>
 	</Policy>
   

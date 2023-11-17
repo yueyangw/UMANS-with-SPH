@@ -116,7 +116,7 @@ public:
 	/// The result will be stored in a NeighborList object inside the agent. 
 	/// You can obtain this result via the Agent::GetNeighbors() method.</remarks>
 	/// <param name="world">A reference to the world in which the simulation takes place.</param>
-	void ComputeNeighbors(WorldBase* world);
+	void ComputeNeighbors(WorldBase* world, Policy* policy);
 
 	/// <summary>Computes a preferred velocity for the agent.</summary>
 	/// <remarks>Because this framework only considers local navigation, 
